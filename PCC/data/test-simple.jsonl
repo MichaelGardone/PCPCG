@@ -1,0 +1,3 @@
+{ "name": "pellet", "ranges":[[10, 400]] }
+{ "name": "power pellet", "ranges":[[0, 0.5]] }
+{ "name": "cherries", "ranges":[[0, 2], [4, 6], [9,11], [13, 20]] }
