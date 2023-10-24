@@ -5,7 +5,6 @@ import numpy as np
 
 class RSLearner(Learner.Learner):
     def __init__(self, features=[], labels=2, history_size=0, neg_e = 0.2, pos_e = 0.2, nue_e = 0.2):
-        super().__init__()
         self.__limits = dict(map(lambda x: (x.name(), (x.ranges(), x.get_children())), features))
 
         self.__neg_e = neg_e
