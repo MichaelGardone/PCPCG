@@ -108,13 +108,26 @@ class SynthHuman:
         ##
         
         if rate == 1:
+            self.__in_row_bad = 0
+            self.__ratings['s'] += 1
             return True, 1
         elif rate < importance:
+            self.__in_row_bad += 1
+            self.__ratings['f'] += 1
             return False, 0
         ##
 
+        success = np.random.uniform(0,1) <= rate
+
+        if success:
+            self.__in_row_bad = 0
+            self.__ratings['s'] += 1
+        else:
+            self.__ratings['f'] += 1
+        ##
+
         # if the random number is at or below the rate, then it's liked -- above, deny!
-        return np.random.uniform(0,1) <= rate, rate
+        return success, rate
     ##
 
     def is_player_done(self) -> bool:
@@ -156,7 +169,6 @@ class SynthHuman:
     def _generate_broad_prefs(self, ll, hl):
         for f in self.__features:
             limits = f.ranges()
-            children = f.get_children()
 
             is_float = False
             for l in limits:
@@ -180,7 +192,6 @@ class SynthHuman:
                 ##
             ##
 
-            # print(f"{f.name()}: {rnd}")
             self.__preferences[f.name()] = rnd
         ##
     ##
@@ -188,7 +199,6 @@ class SynthHuman:
     def _generate_narrow_prefs(self, ll, hl):
         for f in self.__features:
             limits = f.ranges()
-            children = f.get_children()
 
             is_float = False
             for l in limits:
@@ -220,7 +230,6 @@ class SynthHuman:
                 ##
             ##
 
-            # print(f"{f.name()}: {rnd}")
             self.__preferences[f.name()] = rnd
         ##
     ##
@@ -228,7 +237,6 @@ class SynthHuman:
     def _generate_multi_area_prefs(self, ll, hl, n):
         for f in self.__features:
             limits = f.ranges()
-            children = f.get_children()
 
             is_float = False
             for l in limits:
@@ -260,7 +268,6 @@ class SynthHuman:
                 ##
             ##
 
-            # print(f"{f.name()}: {rnd}")
             self.__preferences[f.name()] = rnd
         ##
     ##
