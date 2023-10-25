@@ -20,10 +20,16 @@ def randfloat_from_ranges(ranges, sigfigs=3):
 def randint_srange_from_ranges(ranges, ll, hl):
     # collate into one number line
     low_limit = min(x[0] for x in ranges)
+
+    low_limit = low_limit if low_limit > 0 else 1
+
     high_limit = max(x[1] for x in ranges)
     
-    lower = np.round(np.random.randint(low_limit, np.round(low_limit + low_limit * ll) + 2))
-    upper = np.round(np.random.randint(np.round(high_limit - high_limit * hl), high_limit + 1))
+    num = np.round(np.random.randint(low_limit, high_limit + 1))
+    lower = int(np.round(num * ll))
+    upper = int(np.round(num * hl))
+    if upper > high_limit:
+        upper = high_limit
 
     return [lower, upper]
 ##
@@ -204,10 +210,12 @@ def randfloat_narrow_mrange_from_ranges(ranges, ll, hl, sigfigs=3):
 def randint_multiarea_from_ranges(ranges, ll, hl, n):
     # collate into one number line
     low_limit = min(x[0] for x in ranges)
+    if low_limit == 0:
+        low_limit = 1
     high_limit = max(x[1] for x in ranges)
 
     nums = np.random.randint(low_limit, high_limit + 1, n)
-    nums.sort()
+    nums = np.unique(nums)
 
     res = []
 
@@ -215,15 +223,22 @@ def randint_multiarea_from_ranges(ranges, ll, hl, n):
         low = int(np.round(num - num * ll)) if np.round(num - num * ll) > low_limit else low_limit
         high = int(np.round(num + num * hl)) if np.round(num + num * hl) < high_limit else high_limit
 
+        skip = False
         for r in res:
+            if low >= r[0] and high <= r[1]:
+                skip = True
+                break
+            ##
             if low <= r[1]:
                 low = r[1] + 1
             if high >= r[0] and high <= r[1]:
                 high = r[0] - 1
+                if high < low:
+                    high = low
             ##
         ##
-
-        res.append([low, high])
+        if skip == False:
+            res.append([low, high])
     ##
 
     return res

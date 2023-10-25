@@ -12,7 +12,7 @@ class GenerationType(Enum):
 class SynthHuman:
     AVAILABLE_ID = 1
 
-    def __init__(self, features=[], gen_type = GenerationType.BROAD, tolerance = -1, max_num_ranges=3, sigfigs=3) -> None:
+    def __init__(self, features=[], gen_type = GenerationType.BROAD, tolerance = -1, max_num_ranges=3, sigfigs=3, allow_neutrality=False) -> None:
         self.__id = SynthHuman.AVAILABLE_ID
         SynthHuman.AVAILABLE_ID += 1
         self.__ratings = {"s":0, "n":0, "f":0}
@@ -22,6 +22,8 @@ class SynthHuman:
         self.__tolerance = tolerance
         self.__in_row_bad = 0
         self.__sigfigs = sigfigs
+
+        self.__allow_neutrality = allow_neutrality
 
         if gen_type == GenerationType.MULTI_AREA:
             assert(max_num_ranges > 1, "Need to have more than 1 area available! Otherwise, use BROAD or NARROW.")
@@ -53,14 +55,21 @@ class SynthHuman:
             # ll = 0.8
             # hl = 0.5
             self._generate_broad_prefs(low_mod, high_mod)
+            while len(self.__preferences) == 0:
+                self._generate_broad_prefs(low_mod, high_mod)
         elif self.__gen_type == GenerationType.NARROW:
             # ll = 0.2
             # hl = 0.3
             self._generate_narrow_prefs(low_mod, high_mod)
+            while len(self.__preferences) == 0:
+                self._generate_narrow_prefs(low_mod, high_mod)
         elif self.__gen_type == GenerationType.MULTI_AREA:
             # ll = 0.2
             # hl = 0.3
-            self._generate_multi_area_prefs(low_mod, high_mod, np.random.randint(2, self.__max_num_ranges + 1))
+            n = np.random.randint(2, self.__max_num_ranges + 1)
+            self._generate_multi_area_prefs(low_mod, high_mod, n)
+            while len(self.__preferences) == 0:
+                self._generate_multi_area_prefs(low_mod, high_mod, n)
         else:
             raise Exception("Error: unknown generation type!")
         ##
@@ -70,8 +79,42 @@ class SynthHuman:
         pass
     ##
 
-    def rate(self, sample) -> bool:
-        pass
+    def rate(self, sample) -> tuple:
+        rate = 1
+        importance = 1 / len(sample)
+
+        for key in sample.keys():
+            sdp = sample[key]
+            rngs = self.__preferences[key]
+
+            fail = True
+            if isinstance(rngs[0], float) or isinstance(rngs[0], int):
+                if sdp >= rngs[0] and sdp <= rngs[1]:
+                    fail = False
+                    break
+                ##
+            else:
+                for rng in rngs:
+                    if sdp >= rng[0] and sdp <= rng[1]:
+                        fail = False
+                        break
+                    ##
+                ##
+            ##
+
+            if fail:
+                rate -= importance
+            ##
+        ##
+        
+        if rate == 1:
+            return True, 1
+        elif rate < importance:
+            return False, 0
+        ##
+
+        # if the random number is at or below the rate, then it's liked -- above, deny!
+        return np.random.uniform(0,1) <= rate, rate
     ##
 
     def is_player_done(self) -> bool:
@@ -159,13 +202,21 @@ class SynthHuman:
             if is_float:
                 if len(limits) == 1:
                     rnd = RandUtil.randfloat_narrow_srange_from_ranges(limits, ll, hl, self.__sigfigs)
+                    while len(rnd) == 0:
+                        rnd = RandUtil.randfloat_narrow_srange_from_ranges(limits, ll, hl, self.__sigfigs)
                 else:
                     rnd = RandUtil.randfloat_narrow_mrange_from_ranges(limits, ll, hl, self.__sigfigs)
+                    while len(rnd) == 0:
+                        rnd = RandUtil.randfloat_narrow_mrange_from_ranges(limits, ll, hl, self.__sigfigs)
             else:
                 if len(limits) == 1:
                     rnd = RandUtil.randint_narrow_srange_from_ranges(limits, ll, hl)
+                    while len(rnd) == 0:
+                        rnd = RandUtil.randint_narrow_srange_from_ranges(limits, ll, hl, self.__sigfigs)
                 else:
                     rnd = RandUtil.randint_narrow_mrange_from_ranges(limits, ll, hl)
+                    while len(rnd) == 0:
+                        rnd = RandUtil.randint_narrow_mrange_from_ranges(limits, ll, hl, self.__sigfigs)
                 ##
             ##
 
@@ -191,13 +242,21 @@ class SynthHuman:
             if is_float:
                 if len(limits) == 1:
                     rnd = RandUtil.randfloat_multiarea_from_ranges(limits, ll, hl, n, self.__sigfigs)
+                    while len(rnd) == 0:
+                        rnd = RandUtil.randfloat_multiarea_from_ranges(limits, ll, hl, n, self.__sigfigs)
                 else:
                     rnd = RandUtil.randfloat_multi_mrange_from_ranges(limits, ll, hl, n, self.__sigfigs)
+                    while len(rnd) == 0:
+                        rnd = RandUtil.randfloat_multi_mrange_from_ranges(limits, ll, hl, n, self.__sigfigs)
             else:
                 if len(limits) == 1:
                     rnd = RandUtil.randint_multiarea_from_ranges(limits, ll, hl, n)
+                    while len(rnd) == 0:
+                        rnd = RandUtil.randint_multiarea_from_ranges(limits, ll, hl, n, self.__sigfigs)
                 else:
                     rnd = RandUtil.randint_multi_mrange_from_ranges(limits, ll, hl, n)
+                    while len(rnd) == 0:
+                        rnd = RandUtil.randint_multi_mrange_from_ranges(limits, ll, hl, n, self.__sigfigs)
                 ##
             ##
 

@@ -7,7 +7,9 @@ import utility.SynthHuman as SynthHuman
 import utility.RandUtil as RandUtil
 
 def main(args):
-    featureList = Feature.make_features("data/test-simple.jsonl")
+    # featureList = Feature.make_features("data/test-simple.jsonl")
+
+    featureList = Feature.make_features("data/test.jsonl")
 
     # for f in featureList:
     #     print(f)
@@ -22,7 +24,7 @@ def main(args):
     # print(RandUtil.randfloat_multi_mrange_from_ranges([[0,0.2],[0.3,0.4],[0.55,0.7]], 0.2, 0.3, 3))
 
     broad_synth = SynthHuman.SynthHuman(features=featureList, gen_type=SynthHuman.GenerationType.BROAD)
-    broad_synth.generate_human(0.8, 0.5)
+    broad_synth.generate_human(0.2, 1.5)
     print(broad_synth)
 
     narrow_synth = SynthHuman.SynthHuman(features=featureList, gen_type=SynthHuman.GenerationType.NARROW)
@@ -33,8 +35,12 @@ def main(args):
     ma_synth.generate_human()
     print(ma_synth)
 
-    default_pacman = {"pellets":240, "power pellets":0.04, "cherries": 1}
-    # default_pacman = {"pellets":240, "power pellets":4, "cherries": 1, "ghosts":4}
+    # default_pacman = {"pellet":240, "power pellet":0.04, "cherries": 1}
+    default_pacman = {"pellet":240, "power pellet":4, "cherries": 1, "inky":1,  "blinky":1, "pinky":1, "clyde":1}
+    
+    print(broad_synth.rate(default_pacman))
+    print(narrow_synth.rate(default_pacman))
+    print(ma_synth.rate(default_pacman))
 ##
 
 if __name__ == "__main__":

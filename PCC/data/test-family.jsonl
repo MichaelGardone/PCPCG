@@ -1,0 +1,28 @@
+{
+    "family": "pellets",
+    "ranges":[[10, 400]],
+    "elements": [
+        { "name": "pellets" }, 
+        { "name": "power pellets", "ranges":[[0, 0.5]] }
+    ]
+}
+{
+    "family":"pickups",
+    "ranges":[[0, 2]],
+    "elements": [
+        { "name": "cherry", "ranges":[[3, 6]] },
+        { "name": "strawberry" },
+        { "name": "orange" }
+    ]
+}
+{
+    "family":"ghosts",
+    "ranges":[[1,10]],
+    "cumulative":true,
+    "elements": [
+        { "name": "inky" }
+        { "name": "blinky" }
+        { "name": "pinky" }
+        { "name": "clyde" }
+    ]
+}

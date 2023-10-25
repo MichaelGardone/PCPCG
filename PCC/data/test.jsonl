@@ -1,8 +1,7 @@
 { "name": "pellet", "ranges":[[10, 400]] }
 { "name": "power pellet", "ranges":[[0, 0.5]] }
 { "name": "cherries", "ranges":[[0, 2], [4, 6]] }
-{ "name": "ghosts", "ranges":[[1,10]], "composite":true }
-{ "name": "inky", "parent": "ghosts", "type":"int" }
-{ "name": "blinky", "parent": "ghosts", "type":"int" }
-{ "name": "pinky", "parent": "ghosts", "type":"int" }
-{ "name": "clyde", "parent": "ghosts", "type":"int" }
+{ "name": "inky", "ranges":[[0,4]] }
+{ "name": "blinky", "ranges":[[0,4]] }
+{ "name": "pinky", "ranges":[[0,4]] }
+{ "name": "clyde", "ranges":[[0,4]] }
