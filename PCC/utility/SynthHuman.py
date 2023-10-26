@@ -36,11 +36,6 @@ class SynthHuman:
 
         for f in features:
             self.__preferences[f.name()] = 0
-            if len(f.get_children()) > 0:
-                for child in f.get_children():
-                    self.__preferences[child.name()] = 0
-                ##
-            ##
         ##
     ##
     
@@ -50,28 +45,23 @@ class SynthHuman:
         return (self.__preferences, self.__hates)
     ##
 
-    def generate_preferences(self, low_mod=0.2, high_mod=0.3) -> None:
-        if self.__gen_type == GenerationType.BROAD:
-            # ll = 0.8
-            # hl = 0.5
-            self._generate_broad_prefs(low_mod, high_mod)
-            while len(self.__preferences) == 0:
-                self._generate_broad_prefs(low_mod, high_mod)
-        elif self.__gen_type == GenerationType.NARROW:
-            # ll = 0.2
-            # hl = 0.3
-            self._generate_narrow_prefs(low_mod, high_mod)
-            while len(self.__preferences) == 0:
-                self._generate_narrow_prefs(low_mod, high_mod)
-        elif self.__gen_type == GenerationType.MULTI_AREA:
-            # ll = 0.2
-            # hl = 0.3
-            n = np.random.randint(2, self.__max_num_ranges + 1)
-            self._generate_multi_area_prefs(low_mod, high_mod, n)
-            while len(self.__preferences) == 0:
-                self._generate_multi_area_prefs(low_mod, high_mod, n)
-        else:
-            raise Exception("Error: unknown generation type!")
+    def generate_preferences(self, low_mod=0.8, high_mod=1.1) -> None:
+        areas = 1
+        if self.__gen_type == GenerationType.MULTI_AREA:
+            areas = np.random.randint(1, self.__max_num_ranges + 1)
+        ##
+
+        for f in self.__features:
+            limits = f.ranges()
+
+            rnd = 0
+            if f.type() is float:
+                rnd = RandUtil.rand_float_range(limits, low_mod, high_mod, areas, self.__sigfigs)
+            else:
+                rnd = RandUtil.rand_int_range(limits, low_mod, high_mod, areas)
+            ##
+
+            self.__preferences[f.name()] = rnd
         ##
     ##
 
@@ -164,111 +154,5 @@ class SynthHuman:
 
         out += "\n###########"
         return out
-    ##
-
-    def _generate_broad_prefs(self, ll, hl):
-        for f in self.__features:
-            limits = f.ranges()
-
-            is_float = False
-            for l in limits:
-                if isinstance(l[0], float) or isinstance(l[1], float):
-                    is_float = True
-                    break
-                ##
-            ##
-
-            rnd = 0
-            if is_float:
-                if len(limits) == 1:
-                    rnd = RandUtil.randfloat_srange_from_ranges(limits, ll, hl, self.__sigfigs)
-                else:
-                    rnd = RandUtil.randfloat_mrange_from_ranges(limits, ll, hl, self.__sigfigs)
-            else:
-                if len(limits) == 1:
-                    rnd = RandUtil.randint_srange_from_ranges(limits, ll, hl)
-                else:
-                    rnd = RandUtil.randint_mrange_from_ranges(limits, ll, hl)
-                ##
-            ##
-
-            self.__preferences[f.name()] = rnd
-        ##
-    ##
-
-    def _generate_narrow_prefs(self, ll, hl):
-        for f in self.__features:
-            limits = f.ranges()
-
-            is_float = False
-            for l in limits:
-                if isinstance(l[0], float) or isinstance(l[1], float):
-                    is_float = True
-                    break
-                ##
-            ##
-
-            rnd = 0
-            if is_float:
-                if len(limits) == 1:
-                    rnd = RandUtil.randfloat_narrow_srange_from_ranges(limits, ll, hl, self.__sigfigs)
-                    while len(rnd) == 0:
-                        rnd = RandUtil.randfloat_narrow_srange_from_ranges(limits, ll, hl, self.__sigfigs)
-                else:
-                    rnd = RandUtil.randfloat_narrow_mrange_from_ranges(limits, ll, hl, self.__sigfigs)
-                    while len(rnd) == 0:
-                        rnd = RandUtil.randfloat_narrow_mrange_from_ranges(limits, ll, hl, self.__sigfigs)
-            else:
-                if len(limits) == 1:
-                    rnd = RandUtil.randint_narrow_srange_from_ranges(limits, ll, hl)
-                    while len(rnd) == 0:
-                        rnd = RandUtil.randint_narrow_srange_from_ranges(limits, ll, hl, self.__sigfigs)
-                else:
-                    rnd = RandUtil.randint_narrow_mrange_from_ranges(limits, ll, hl)
-                    while len(rnd) == 0:
-                        rnd = RandUtil.randint_narrow_mrange_from_ranges(limits, ll, hl, self.__sigfigs)
-                ##
-            ##
-
-            self.__preferences[f.name()] = rnd
-        ##
-    ##
-
-    def _generate_multi_area_prefs(self, ll, hl, n):
-        for f in self.__features:
-            limits = f.ranges()
-
-            is_float = False
-            for l in limits:
-                if isinstance(l[0], float) or isinstance(l[1], float):
-                    is_float = True
-                    break
-                ##
-            ##
-
-            rnd = 0
-            if is_float:
-                if len(limits) == 1:
-                    rnd = RandUtil.randfloat_multiarea_from_ranges(limits, ll, hl, n, self.__sigfigs)
-                    while len(rnd) == 0:
-                        rnd = RandUtil.randfloat_multiarea_from_ranges(limits, ll, hl, n, self.__sigfigs)
-                else:
-                    rnd = RandUtil.randfloat_multi_mrange_from_ranges(limits, ll, hl, n, self.__sigfigs)
-                    while len(rnd) == 0:
-                        rnd = RandUtil.randfloat_multi_mrange_from_ranges(limits, ll, hl, n, self.__sigfigs)
-            else:
-                if len(limits) == 1:
-                    rnd = RandUtil.randint_multiarea_from_ranges(limits, ll, hl, n)
-                    while len(rnd) == 0:
-                        rnd = RandUtil.randint_multiarea_from_ranges(limits, ll, hl, n, self.__sigfigs)
-                else:
-                    rnd = RandUtil.randint_multi_mrange_from_ranges(limits, ll, hl, n)
-                    while len(rnd) == 0:
-                        rnd = RandUtil.randint_multi_mrange_from_ranges(limits, ll, hl, n, self.__sigfigs)
-                ##
-            ##
-
-            self.__preferences[f.name()] = rnd
-        ##
     ##
 ##

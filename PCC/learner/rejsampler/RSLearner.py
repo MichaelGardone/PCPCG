@@ -1,15 +1,18 @@
 import utility.RingBuffer as RingBuffer
 import learner.Learner as Learner
+import utility.RandUtil as RandUtil
 
 import numpy as np
 
-class RSLearner(Learner.Learner):
-    def __init__(self, features=[], labels=2, history_size=0, neg_e = 0.2, pos_e = 0.2, nue_e = 0.2):
-        self.__limits = dict(map(lambda x: (x.name(), (x.ranges(), x.get_children())), features))
+class RSLearner():
+    def __init__(self, features=[], labels=2, history_size=0, neg_e = 0.2, pos_e = 0.2, nue_e = 0.2, sigfigs=3):
+        self.__limits = dict(map(lambda x: (x.name(), x), features))
 
         self.__neg_e = neg_e
         self.__pos_e = pos_e
         self.__nue_e = nue_e
+
+        self.__sigfigs = sigfigs
 
         assert(labels > 3 or labels < 2, "Rejection Sampler can't have less than two or more than three labels!")
         self.__num_labels = labels
@@ -57,15 +60,28 @@ class RSLearner(Learner.Learner):
         ##
     ##
 
-    def generate_sample(self):
-        sample = {}
+    def generate_sample(self, sample_type=Learner.SampleType.LEARN, scount=1):
+        samples = []
         
+        picked = {}
         for key in self.__limits.keys():
-            limits = self.__limits[key]
-            print(key, limits)
+            limits = self.__limits[key].ranges()
+            ftype = self.__limits[key].type()
+
+            selected = 0
+            if ftype is int:
+                selected = RandUtil.rand_int(limits, scount)
+            else:
+                selected = RandUtil.rand_float(limits, scount, self.__sigfigs)
+            picked[key] = selected
         ##
 
-        return sample
+        # Fix so it's a list of dictionaries
+        for i in range(scount):
+            samples.append(dict(map(lambda x: (x, picked[x][i]), picked)))
+        ##
+
+        return samples
     ##
 
     def rate_sample(self, sample):

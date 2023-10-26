@@ -6,12 +6,19 @@ class Feature():
         # kwargs -- dictionary of named arguments
         self.__name = kwargs.get('name')
         self.__ranges = kwargs.get('ranges')
-        self.__composite = kwargs.get('composite')
-        self.__children = []
 
-        if kwargs.get('children'):
-            assert(self.__composite)
-            self.__children = kwargs.get('children')
+        match kwargs.get('type'):
+            case "int":
+                self.__type = int
+            case "float":
+                self.__type = float
+            case "toggle":
+                self.__type = bool
+            case "bool":
+                self.__type = bool
+            case None:
+                self.__type = "UNKNOWN"
+            ##
         ##
     ##
 
@@ -23,16 +30,16 @@ class Feature():
         return self.__ranges
     ##
 
+    def type(self):
+        return self.__type
+    ##
+
     def add_child(self, child):
         self.__children.append(child)
     ##
 
     def get_child(self, i):
         return self.__children[i]
-    ##
-
-    def get_children(self):
-        return self.__children
     ##
 
     def __str__(self) -> str:
@@ -43,12 +50,6 @@ class Feature():
                 s += ", "
             ##
         ##
-
-        if self.__composite:
-            s += "\n\t"
-            s += ', '.join(map(lambda x: x.name(), self.__children))
-        ##
-
         return s
     ##
 ##
@@ -64,31 +65,32 @@ def make_features(path) -> list:
             result = json.loads(itm)
             name = result["name"]
             ranges = result["ranges"] if "ranges" in result.keys() else []
-            parent = result["parent"] if "parent" in result.keys() else None
-            composite = result["composite"] if "composite" in result.keys() else False
+            feat_type = result["type"] if "type" in result.keys() else None
 
-            if parent == None:
-                f = None
-                if name in c2p.keys():
-                    f = Feature(name=name, ranges=ranges, composite=composite, children=c2p[name])
-                    del c2p[name]
-                else:
-                    f = Feature(name=name, ranges=ranges, composite=composite)
-                ##
-                features.append(f)
-            else:
-                indx = next((i for i, item in enumerate(features) if item.name() == parent), -1)
+            features.append(Feature(name=name, ranges=ranges, type=feat_type))
 
-                if indx > -1:
-                    features[indx].add_child(Feature(name=name, ranges=ranges, composite=composite))
-                else:
-                    if parent in c2p.keys():
-                        c2p[parent].append(Feature(name=name, ranges=ranges, composite=composite))
-                    else:
-                        c2p[parent] = [Feature(name=name, ranges=ranges, composite=composite)]
-                    ##
-                ##
-            ##
+            # if parent == None:
+            #     f = None
+            #     if name in c2p.keys():
+            #         f = Feature(name=name, ranges=ranges, composite=composite, children=c2p[name])
+            #         del c2p[name]
+            #     else:
+            #         f = Feature(name=name, ranges=ranges, composite=composite)
+            #     ##
+            #     features.append(f)
+            # else:
+            #     indx = next((i for i, item in enumerate(features) if item.name() == parent), -1)
+
+            #     if indx > -1:
+            #         features[indx].add_child(Feature(name=name, ranges=ranges, composite=composite))
+            #     else:
+            #         if parent in c2p.keys():
+            #             c2p[parent].append(Feature(name=name, ranges=ranges, composite=composite))
+            #         else:
+            #             c2p[parent] = [Feature(name=name, ranges=ranges, composite=composite)]
+            #         ##
+            #     ##
+            # ##
         ##
 
         for key in c2p.keys():
