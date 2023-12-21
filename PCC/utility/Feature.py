@@ -17,7 +17,7 @@ class Feature():
             case "bool":
                 self.__type = bool
             case None:
-                self.__type = "UNKNOWN"
+                self.__type = kwargs.get('type')
             ##
         ##
     ##
@@ -68,29 +68,6 @@ def make_features(path) -> list:
             feat_type = result["type"] if "type" in result.keys() else None
 
             features.append(Feature(name=name, ranges=ranges, type=feat_type))
-
-            # if parent == None:
-            #     f = None
-            #     if name in c2p.keys():
-            #         f = Feature(name=name, ranges=ranges, composite=composite, children=c2p[name])
-            #         del c2p[name]
-            #     else:
-            #         f = Feature(name=name, ranges=ranges, composite=composite)
-            #     ##
-            #     features.append(f)
-            # else:
-            #     indx = next((i for i, item in enumerate(features) if item.name() == parent), -1)
-
-            #     if indx > -1:
-            #         features[indx].add_child(Feature(name=name, ranges=ranges, composite=composite))
-            #     else:
-            #         if parent in c2p.keys():
-            #             c2p[parent].append(Feature(name=name, ranges=ranges, composite=composite))
-            #         else:
-            #             c2p[parent] = [Feature(name=name, ranges=ranges, composite=composite)]
-            #         ##
-            #     ##
-            # ##
         ##
 
         for key in c2p.keys():

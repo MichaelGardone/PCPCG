@@ -3,6 +3,7 @@ import argparse, os
 import utility.Feature as Feature
 import learner.rejsampler.RSLearner as RS
 import utility.SynthHuman as SynthHuman
+import learner.Learner as Learner
 
 def main(args):
     # featureList = Feature.make_features("data/test-simple.jsonl")
@@ -11,7 +12,7 @@ def main(args):
 
     rs = RS.RSLearner(features=featureList)
 
-    samples = rs.generate_sample(scount=10)
+    samples = rs.generate_sample(sample_type=Learner.SampleType.RANDOM, scount=10, unk_threshold=0.4)
 
     # print(RandUtil.rand_int_range([[10,400]], loff=0.2, hoff=1.2))
     # print(RandUtil.rand_int_range([[0,3], [6,10], [15,20]], loff=0.2, hoff=1.2))
@@ -32,8 +33,13 @@ def main(args):
     # print(broad_synth)
 
     for s in samples:
-        print(broad_synth.rate(s))
+        rating = broad_synth.rate(s)
+        print(rating)
+        rs.record_sample(s, rating)
     ##
+
+    samples = rs.generate_sample(Learner.SampleType.LEARN, 10, 0.5)
+    print(samples)
 
     # narrow_synth = SynthHuman.SynthHuman(features=featureList, gen_type=SynthHuman.GenerationType.NARROW)
     # narrow_synth.generate_human()

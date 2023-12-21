@@ -57,8 +57,10 @@ class SynthHuman:
             rnd = 0
             if f.type() is float:
                 rnd = RandUtil.rand_float_range(limits, low_mod, high_mod, areas, self.__sigfigs)
-            else:
+            elif f.type() is int:
                 rnd = RandUtil.rand_int_range(limits, low_mod, high_mod, areas)
+            else:
+                rnd = np.random.choice([0, 1])
             ##
 
             self.__preferences[f.name()] = rnd

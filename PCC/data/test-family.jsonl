@@ -11,7 +11,7 @@
     "ranges":[[0, 2]],
     "elements": [
         { "name": "cherry", "ranges":[[3, 6]] },
-        { "name": "strawberry" },
+        { "name": "strawberry", "ranges":[[3, 4]] },
         { "name": "orange" }
     ]
 }
