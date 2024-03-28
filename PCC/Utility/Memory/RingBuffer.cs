@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
-
-namespace PCC.Utility.Memory
+﻿namespace PCC.Utility.Memory
 {
-    public class RingBuffer
+    public class RingBuffer<T>
     {
-        private int[] m_memory;
+        private T[] m_memory;
         
         private int m_offset = 0;
         private bool m_full = false;
@@ -15,10 +12,10 @@ namespace PCC.Utility.Memory
             if (capacity < 0)
                 throw new ArgumentException("Capcity must be greater than 0!");
 
-            m_memory = new int[capacity];
+            m_memory = new T[capacity];
         }
 
-        public void Enqueue(int sample)
+        public void Enqueue(T sample)
         {
             m_memory[m_offset] = sample;
             m_offset++;
@@ -30,7 +27,7 @@ namespace PCC.Utility.Memory
             }
         }
 
-        public int DequeueAt(int i)
+        public T PeekAt(int i)
         {
             // memory length is always > 0
             int index = i % m_memory.Length;

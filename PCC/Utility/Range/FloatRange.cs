@@ -1,46 +1,39 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PCC.Utility.Range
 {
-    public class IntRange
+    public class FloatRange
     {
-        private List<Tuple<int,int>> m_ranges;
+        private List<Tuple<float,float>> m_ranges;
         private Random m_random;
 
-        public IntRange(int min, int max)
+        public FloatRange(float min, float max)
         {
-            m_ranges = new List<Tuple<int, int>>()
+            m_ranges = new List<Tuple<float, float>>()
             {
-                new Tuple<int, int> (min, max + 1)
+                new Tuple<float, float> (min, max + 1)
             };
 
             m_random = GlobalUtilities.GetRandom();
         }
 
-        public IntRange(int[] mins, int[] maxes, bool errorOut = false)
+        public FloatRange(float[] mins, float[] maxes, bool errorOut = false)
         {
             if (mins == null || maxes == null) throw new ArgumentNullException("Min/max cannot be null!");
             if (mins.Length != maxes.Length) throw new ArgumentException("You must have the same number of minimums to maximums!");
 
-            m_ranges = new List<Tuple<int,int>>();
+            m_ranges = new List<Tuple<float,float>>();
 
             // Create lists
             if (errorOut == false)
             {
                 for(int i = 0; i < mins.Length; i++)
                 {
-                    Tuple<int, int> add;
-
                     if (mins[i] > maxes[i])
-                        add = new Tuple<int, int>(maxes[i], mins[i] + 1);
+                        m_ranges.Add(new Tuple<float, float>(maxes[i], mins[i] + 1));
                     else
-                        add = new Tuple<int, int>(mins[i], maxes[i] + 1);
-
-                    // Don't add something that already exists
-                    if (m_ranges.Any(x => x.Item1 == add.Item1 && x.Item2 == add.Item2))
-                        continue;
-
-                    m_ranges.Add(add);
+                        m_ranges.Add(new Tuple<float, float>(mins[i], maxes[i] + 1));
                 }
             }
             else
@@ -49,12 +42,7 @@ namespace PCC.Utility.Range
                 {
                     if (mins[i] > maxes[i])
                         throw new ArgumentException("Min/Max ranges are mixed!");
-
-                    // Don't add something that already exists
-                    if (m_ranges.Any(x => x.Item1 == mins[i] && x.Item2 == maxes[i] + 1))
-                        throw new ArgumentException("Duplicate detected!");
-
-                    m_ranges.Add(new Tuple<int, int>(mins[i], maxes[i] + 1));
+                    m_ranges.Add(new Tuple<float, float>(mins[i], maxes[i] + 1));
                 }
             }
 
@@ -75,18 +63,18 @@ namespace PCC.Utility.Range
             {
                 if (merge[i])
                 {
-                    int min = m_ranges[i - 1].Item1;
-                    int max = m_ranges[i].Item2;
+                    float min = m_ranges[i - 1].Item1;
+                    float max = m_ranges[i].Item2;
 
                     m_ranges.RemoveAt(i);
-                    m_ranges[i - 1] = new Tuple<int, int>(min, max);
+                    m_ranges[i - 1] = new Tuple<float, float>(min, max);
                 }
             }
 
             m_random = GlobalUtilities.GetRandom();
         }
 
-        public IntRange(List<Tuple<int, int>> ranges)
+        public FloatRange(List<Tuple<float, float>> ranges)
         {
             m_ranges = ranges;
 
@@ -107,25 +95,25 @@ namespace PCC.Utility.Range
             {
                 if (merge[i])
                 {
-                    int min = m_ranges[i - 1].Item1;
-                    int max = m_ranges[i].Item2;
+                    float min = m_ranges[i - 1].Item1;
+                    float max = m_ranges[i].Item2;
 
                     m_ranges.RemoveAt(i);
-                    m_ranges[i - 1] = new Tuple<int, int>(min, max);
+                    m_ranges[i - 1] = new Tuple<float, float>(min, max);
                 }
             }
 
             m_random = GlobalUtilities.GetRandom();
         }
 
-        public IntRange PruneInvalidRanges()
+        public FloatRange PruneInvalidRanges()
         {
             return null;
         }
 
-        public int[] Pick(int num = 1, List<Tuple<int,int>>? exclude = null)
+        public float[] Pick(int num = 1, List<Tuple<float,float>>? exclude = null)
         {
-            int[] picked = new int[num];
+            float[] picked = new float[num];
 
             if (exclude != null)
             {
@@ -133,9 +121,9 @@ namespace PCC.Utility.Range
                 if (DoesOtherRangeOverlapEntirely(exclude))
                     return null;
 
-                List<Tuple<int, int>> validRanges = new List<Tuple<int, int>>();
+                List<Tuple<float, float>> validRanges = new List<Tuple<float, float>>();
 
-                foreach(Tuple<int,int> range in m_ranges)
+                foreach(Tuple<float,float> range in m_ranges)
                 {
                     if (DoesOtherRangeOverlapRange(range, exclude))
                         continue;
@@ -147,8 +135,8 @@ namespace PCC.Utility.Range
                     do
                     {
                         int indx = m_random.Next(0, validRanges.Count);
-                        picked[i] = m_random.Next(validRanges[indx].Item1, validRanges[indx].Item2);
-                    } while (GlobalUtilities.IsIntegerInRange(picked[i], exclude));
+                        picked[i] = (float)(m_random.NextDouble() * (validRanges[indx].Item2 - validRanges[indx].Item1) + validRanges[indx].Item1);
+                    } while (GlobalUtilities.IsFloatInRange(picked[i], exclude));
                 }
             }
             else
@@ -156,19 +144,19 @@ namespace PCC.Utility.Range
                 for(int i = 0; i < num; i++)
                 {
                     int indx = m_random.Next(0, m_ranges.Count);
-                    picked[i] = m_random.Next(m_ranges[indx].Item1, m_ranges[indx].Item2);
+                    picked[i] = (float)(m_random.NextDouble() * (m_ranges[indx].Item2 - m_ranges[indx].Item1) + m_ranges[indx].Item1);
                 }
             }
 
             return picked;
         }
 
-        public Tuple<int,int> GetRandomRange()
+        public Tuple<float,float> GetRandomRange()
         {
             return m_ranges[m_random.Next(0, m_ranges.Count)];
         }
 
-        public Tuple<int, int> GetARange(int i)
+        public Tuple<float, float> GetARange(int i)
         {
             if (i >= m_ranges.Count || i < 0)
                 return null;
@@ -176,10 +164,10 @@ namespace PCC.Utility.Range
             return m_ranges[i];
         }
         
-        public bool DoesOtherRangeOverlapEntirely([NotNull] List<Tuple<int,int>> otherIntRange)
+        public bool DoesOtherRangeOverlapEntirely([NotNull] List<Tuple<float,float>> otherFloatRange)
         {
-            Tuple<int, int> minRange = otherIntRange[0];
-            Tuple<int, int> maxRange = otherIntRange[otherIntRange.Count - 1];
+            Tuple<float, float> minRange = otherFloatRange[0];
+            Tuple<float, float> maxRange = otherFloatRange[otherFloatRange.Count - 1];
 
             if (m_ranges[0].Item1 >= minRange.Item1 && m_ranges[m_ranges.Count - 1].Item2 - 1 <= maxRange.Item2)
                 return true;
@@ -187,10 +175,10 @@ namespace PCC.Utility.Range
             return false;
         }
 
-        public bool DoesOtherRangeOverlapRange(Tuple<int, int> range, [NotNull] List<Tuple<int, int>> otherIntRange)
+        public bool DoesOtherRangeOverlapRange(Tuple<float, float> range, [NotNull] List<Tuple<float, float>> otherFloatRange)
         {
-            Tuple<int, int> minRange = otherIntRange[0];
-            Tuple<int, int> maxRange = otherIntRange[otherIntRange.Count - 1];
+            Tuple<float, float> minRange = otherFloatRange[0];
+            Tuple<float, float> maxRange = otherFloatRange[otherFloatRange.Count - 1];
 
             if (range.Item1 >= minRange.Item1 && range.Item2 - 1 <= maxRange.Item2)
                 return true;

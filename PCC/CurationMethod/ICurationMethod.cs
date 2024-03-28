@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PCC.CurationMethod
@@ -12,7 +11,8 @@ namespace PCC.CurationMethod
         UNSAFE_ONLY,
         RANDOM,
         RANDOM_FROM_KNOWNS,
-        RANDOM_FROM_UNKNOWNS
+        RANDOM_FROM_UNKNOWNS,
+        REUSE
     }
 
     public interface ICurationMethod
@@ -29,6 +29,19 @@ namespace PCC.CurationMethod
         /// </summary>
         public void GeneratePickedSample(int count = 1, SampleGenerationMethod method = SampleGenerationMethod.RANDOM);
 
+        /// <summary>
+        /// Clear out the backing memory of the curation method.
+        /// </summary>
         public void ClearMemory();
+
+        /// <summary>
+        /// Get the labels associated with the curation method.
+        /// </summary>
+        public void GetLabels();
+
+        /// <summary>
+        /// Get the features associated with the curation method.
+        /// </summary>
+        public void GetFeatures();
     }
 }

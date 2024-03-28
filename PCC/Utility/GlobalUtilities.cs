@@ -22,5 +22,16 @@
 
             return false;
         }
+
+        public static bool IsFloatInRange(float real, List<Tuple<float, float>> ranges)
+        {
+            foreach (Tuple<float, float> range in ranges)
+            {
+                if (real >= range.Item1 && real <= range.Item2)
+                    return true;
+            }
+
+            return false;
+        }
     }
 }
