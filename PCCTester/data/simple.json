@@ -1,0 +1,22 @@
+﻿[
+  {
+    "name": "pellets",
+    "ranges": [ [ 10, 400 ] ],
+    "type": "int"
+  },
+  {
+    "name": "power pellets",
+    "ranges": [ [ 0.0, 0.5 ] ],
+    "type": "float"
+  },
+  {
+    "name": "cherries",
+    "ranges": [
+      [ 0, 2 ],
+      [ 4, 6 ],
+      [ 9, 11 ],
+      [ 13, 20 ]
+    ],
+    "type": "int"
+  }
+]
