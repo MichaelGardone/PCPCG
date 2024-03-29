@@ -123,6 +123,11 @@ namespace PCC.Utility.Range
             return null;
         }
 
+        public int[] Pick(IntRange exclude, int num = 1)
+        {
+            return Pick(num, exclude.m_ranges);
+        }
+
         public int[] Pick(int num = 1, List<Tuple<int,int>>? exclude = null)
         {
             int[] picked = new int[num];
@@ -175,8 +180,29 @@ namespace PCC.Utility.Range
 
             return m_ranges[i];
         }
-        
-        public bool DoesOtherRangeOverlapEntirely([NotNull] List<Tuple<int,int>> otherIntRange)
+
+        public Tuple<int,int>? WhichRangeHasValue(int value)
+        {
+            Tuple<int, int>? rangeWithVal = null;
+            
+            foreach(Tuple<int,int> range in m_ranges)
+            {
+                if(value >= range.Item1 && value <= range.Item2)
+                {
+                    rangeWithVal = range;
+                    break;
+                }
+            }
+
+            return rangeWithVal;
+        }
+
+        public bool DoesOtherRangeOverlapEntirely(IntRange otherIntRange)
+        {
+            return DoesOtherRangeOverlapEntirely(otherIntRange.m_ranges);
+        }
+
+        public bool DoesOtherRangeOverlapEntirely(List<Tuple<int,int>> otherIntRange)
         {
             Tuple<int, int> minRange = otherIntRange[0];
             Tuple<int, int> maxRange = otherIntRange[otherIntRange.Count - 1];
@@ -187,7 +213,7 @@ namespace PCC.Utility.Range
             return false;
         }
 
-        public bool DoesOtherRangeOverlapRange(Tuple<int, int> range, [NotNull] List<Tuple<int, int>> otherIntRange)
+        public bool DoesOtherRangeOverlapRange(Tuple<int, int> range, List<Tuple<int, int>> otherIntRange)
         {
             Tuple<int, int> minRange = otherIntRange[0];
             Tuple<int, int> maxRange = otherIntRange[otherIntRange.Count - 1];

@@ -12,7 +12,7 @@ namespace PCCTester.RangeTests
             FloatRange range = new FloatRange(10, 20);
             float[] results = range.Pick(10);
 
-            Assert.AreEqual(new Tuple<float, float>(10, 21), range.GetARange(0)); // +1 because Next() is not inclusive of the max
+            Assert.AreEqual(new Tuple<float, float>(10, 20.0001f), range.GetARange(0)); // +1 because Next() is not inclusive of the max
             Assert.AreEqual(10, results.Length);
 
             // returns: list without 12, 13, or 14
@@ -39,8 +39,8 @@ namespace PCCTester.RangeTests
             // Only two are created as a result of merging
             Assert.AreEqual(2, range.RangeCount());
             // Re-arranged on the basis of max :--> (10,24), (24,40)
-            Assert.AreEqual(new Tuple<float, float>(10, 25), range.GetARange(0)); // +1 because Next() is not inclusive of the max
-            Assert.AreEqual(new Tuple<float, float>(25, 41), range.GetARange(1));
+            Assert.AreEqual(new Tuple<float, float>(10, 24.0001f), range.GetARange(0)); // +1 because Next() is not inclusive of the max
+            Assert.AreEqual(new Tuple<float, float>(25, 40.0001f), range.GetARange(1));
 
             float[] results = range.Pick(10);
             Assert.AreEqual(10, results.Length);
@@ -82,10 +82,10 @@ namespace PCCTester.RangeTests
             // Only two are created as a result of merging
             Assert.AreEqual(4, range.RangeCount());
             // Re-arranged on the basis of max :--> (10,24), (24,40)
-            Assert.AreEqual(new Tuple<float, float>(10, 25), range.GetARange(0)); // +1 because Next() is not inclusive of the max
-            Assert.AreEqual(new Tuple<float, float>(25, 56), range.GetARange(1));
-            Assert.AreEqual(new Tuple<float, float>(60, 101), range.GetARange(2));
-            Assert.AreEqual(new Tuple<float, float>(110, 151), range.GetARange(3));
+            Assert.AreEqual(new Tuple<float, float>(10, 24.0001f), range.GetARange(0)); // +1 because Next() is not inclusive of the max
+            Assert.AreEqual(new Tuple<float, float>(25, 55.0001f), range.GetARange(1));
+            Assert.AreEqual(new Tuple<float, float>(60, 100.0001f), range.GetARange(2));
+            Assert.AreEqual(new Tuple<float, float>(110, 150.0001f), range.GetARange(3));
         }
     }
 }

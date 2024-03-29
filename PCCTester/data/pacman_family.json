@@ -1,0 +1,43 @@
+﻿[
+  {
+    "family": "spaces",
+    "features": [
+      {
+        "name": "pellet",
+        "intRanges": [ [ 10, 400 ] ]
+      },
+      {
+        "name": "power pellet",
+        "floatRanges": [ [ 0, 0.5 ] ]
+      },
+      {
+        "name": "cherries",
+        "intRanges": [
+          [ 0, 2 ],
+          [ 4, 6 ]
+        ]
+      }
+    ]
+  },
+  {
+    "family": "ghosts",
+    "features": [
+      {
+        "name": "inky",
+        "intRanges": [ [ 0, 4 ] ]
+      },
+      {
+        "name": "blinky",
+        "intRanges": [ [ 0, 4 ] ]
+      },
+      {
+        "name": "pinky",
+        "intRanges": [ [ 0, 4 ] ]
+      },
+      {
+        "name": "clyde",
+        "intRanges": [ [ 0, 4 ] ]
+      }
+    ]
+  }
+]

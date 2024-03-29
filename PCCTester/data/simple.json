@@ -1,22 +1,19 @@
 ﻿[
   {
     "name": "pellets",
-    "ranges": [ [ 10, 400 ] ],
-    "type": "int"
+    "intRanges": [ [ 10, 400 ] ]
   },
   {
     "name": "power pellets",
-    "ranges": [ [ 0.0, 0.5 ] ],
-    "type": "float"
+    "floatRanges": [ [ 0.0, 0.5 ] ]
   },
   {
     "name": "cherries",
-    "ranges": [
+    "intRanges": [
       [ 0, 2 ],
       [ 4, 6 ],
       [ 9, 11 ],
       [ 13, 20 ]
-    ],
-    "type": "int"
+    ]
   }
 ]

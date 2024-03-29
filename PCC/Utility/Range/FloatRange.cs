@@ -12,7 +12,7 @@ namespace PCC.Utility.Range
         {
             m_ranges = new List<Tuple<float, float>>()
             {
-                new Tuple<float, float> (min, max + 1)
+                new Tuple<float, float> (min, max + 0.0001f)
             };
 
             m_random = GlobalUtilities.GetRandom();
@@ -31,9 +31,9 @@ namespace PCC.Utility.Range
                 for(int i = 0; i < mins.Length; i++)
                 {
                     if (mins[i] > maxes[i])
-                        m_ranges.Add(new Tuple<float, float>(maxes[i], mins[i] + 1));
+                        m_ranges.Add(new Tuple<float, float>(maxes[i], mins[i] + 0.0001f));
                     else
-                        m_ranges.Add(new Tuple<float, float>(mins[i], maxes[i] + 1));
+                        m_ranges.Add(new Tuple<float, float>(mins[i], maxes[i] + 0.0001f));
                 }
             }
             else
@@ -42,7 +42,7 @@ namespace PCC.Utility.Range
                 {
                     if (mins[i] > maxes[i])
                         throw new ArgumentException("Min/Max ranges are mixed!");
-                    m_ranges.Add(new Tuple<float, float>(mins[i], maxes[i] + 1));
+                    m_ranges.Add(new Tuple<float, float>(mins[i], maxes[i] + 0.0001f));
                 }
             }
 
@@ -54,7 +54,7 @@ namespace PCC.Utility.Range
 
             for(int i = 0; i < m_ranges.Count - 1; i++)
             {
-                if (m_ranges[i].Item2 - 1 >= m_ranges[i + 1].Item1)
+                if (m_ranges[i].Item2 - 0.0001f >= m_ranges[i + 1].Item1)
                     merge[i + 1] = true;
             }
 
@@ -111,6 +111,11 @@ namespace PCC.Utility.Range
             return null;
         }
 
+        public float[] Pick(FloatRange exclude, int num = 1)
+        {
+            return Pick(num, exclude.m_ranges);
+        }
+
         public float[] Pick(int num = 1, List<Tuple<float,float>>? exclude = null)
         {
             float[] picked = new float[num];
@@ -156,6 +161,22 @@ namespace PCC.Utility.Range
             return m_ranges[m_random.Next(0, m_ranges.Count)];
         }
 
+        public Tuple<float, float>? WhichRangeHasValue(float value)
+        {
+            Tuple<float, float>? rangeWithVal = null;
+
+            foreach (Tuple<float, float> range in m_ranges)
+            {
+                if (value >= range.Item1 && value <= range.Item2)
+                {
+                    rangeWithVal = range;
+                    break;
+                }
+            }
+
+            return rangeWithVal;
+        }
+
         public Tuple<float, float> GetARange(int i)
         {
             if (i >= m_ranges.Count || i < 0)
@@ -163,8 +184,13 @@ namespace PCC.Utility.Range
 
             return m_ranges[i];
         }
-        
-        public bool DoesOtherRangeOverlapEntirely([NotNull] List<Tuple<float,float>> otherFloatRange)
+
+        public bool DoesOtherRangeOverlapEntirely(FloatRange otherIntRange)
+        {
+            return DoesOtherRangeOverlapEntirely(otherIntRange.m_ranges);
+        }
+
+        public bool DoesOtherRangeOverlapEntirely(List<Tuple<float,float>> otherFloatRange)
         {
             Tuple<float, float> minRange = otherFloatRange[0];
             Tuple<float, float> maxRange = otherFloatRange[otherFloatRange.Count - 1];

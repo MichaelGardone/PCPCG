@@ -1,11 +1,19 @@
-﻿namespace PCC.Utility.Memory
+﻿using System.Collections;
+
+namespace PCC.Utility.Memory
 {
-    public class RingBuffer<T>
+    public class RingBuffer<T> : IMemoryBuffer<T>
     {
-        private T[] m_memory;
-        
+        protected T[] m_memory;
+
+        public T this[int index]
+        {
+            get { return m_memory[index]; }
+        }
+
         private int m_offset = 0;
         private bool m_full = false;
+
 
         public RingBuffer(int capacity = 20)
         {
@@ -15,7 +23,7 @@
             m_memory = new T[capacity];
         }
 
-        public void Enqueue(T sample)
+        public void Add(T sample)
         {
             m_memory[m_offset] = sample;
             m_offset++;
@@ -27,7 +35,7 @@
             }
         }
 
-        public T PeekAt(int i)
+        public T Get(int i)
         {
             // memory length is always > 0
             int index = i % m_memory.Length;
@@ -45,6 +53,39 @@
         public bool IsFull()
         {
             return m_full;
+        }
+
+        public static RingBuffer<T> CreateRingBuffer(int capacity = 20)
+        {
+            return new RingBuffer<T>(capacity);
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            int max = m_full ? m_memory.Length : m_offset;
+
+            for (int i = 0; i < max; i++)
+            {
+                yield return m_memory[i];
+            }
+        }
+
+        public int Count()
+        {
+            if (m_full)
+                return m_memory.Length;
+            else
+                return m_offset;
+        }
+
+        public int Size()
+        {
+            return m_memory.Length;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 }

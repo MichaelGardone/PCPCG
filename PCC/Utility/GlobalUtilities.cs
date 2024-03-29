@@ -12,6 +12,11 @@
             return random;
         }
 
+        public static void ResetRandom(int seed = 424413)
+        {
+            random = new Random(seed);
+        }
+
         public static bool IsIntegerInRange(int integer, List<Tuple<int,int>> ranges)
         {
             foreach (Tuple<int, int> range in ranges)
