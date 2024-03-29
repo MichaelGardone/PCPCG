@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SyntheticHumans")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf9451f8951bb550e6fb9e38d9d1f18113ae4915")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+df127cf7dd56dd49b43e46368372f98ed5af5a1c")]
 [assembly: System.Reflection.AssemblyProductAttribute("SyntheticHumans")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SyntheticHumans")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
