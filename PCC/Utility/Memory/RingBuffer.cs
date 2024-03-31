@@ -44,6 +44,15 @@ namespace PCC.Utility.Memory
             return m_memory[index];
         }
 
+        public void Replace(int indx, T item)
+        {
+            // memory length is always > 0
+            int index = indx % m_memory.Length;
+            index = index < 0 ? index + m_memory.Length : index;
+
+            m_memory[index] = item;
+        }
+
         public void Clear()
         {
             m_offset = 0;
@@ -53,6 +62,11 @@ namespace PCC.Utility.Memory
         public bool IsFull()
         {
             return m_full;
+        }
+
+        public int GetNextSlotToFill()
+        {
+            return m_offset;
         }
 
         public static RingBuffer<T> CreateRingBuffer(int capacity = 20)

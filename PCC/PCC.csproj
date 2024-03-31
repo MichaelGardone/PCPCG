@@ -10,4 +10,8 @@
     <Folder Include="ContentRepresentation\Label\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="LibSVMsharp" Version="1.2.5" />
+  </ItemGroup>
+
 </Project>

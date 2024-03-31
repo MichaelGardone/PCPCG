@@ -6,6 +6,8 @@
         
         public T Get(int indx);
 
+        public void Replace(int indx, T item);
+
         public void Clear();
 
         public bool IsFull();

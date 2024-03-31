@@ -38,5 +38,15 @@
 
             return false;
         }
+
+        public static List<int> CreateListOfIntsUpTo(int num)
+        {
+            List<int> ints = new List<int>();
+
+            while(ints.Count < num)
+                ints.Add(ints.Count);
+
+            return ints;
+        }
     }
 }

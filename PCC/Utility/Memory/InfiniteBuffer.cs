@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace PCC.Utility.Memory
 {
@@ -37,6 +33,15 @@ namespace PCC.Utility.Memory
             index = index < 0 ? index + m_memory.Count : index;
 
             return m_memory[index];
+        }
+
+        public void Replace(int indx, T item)
+        {
+            // memory length is always > 0
+            int index = indx % m_memory.Count;
+            index = index < 0 ? index + m_memory.Count : index;
+
+            m_memory[index] = item;
         }
 
         public bool IsFull()
