@@ -1,0 +1,3 @@
+[submodule "LibSVMsharp"]
+	path = LibSVMsharp
+	url = https://github.com/ccerhan/LibSVMsharp.git

@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibSVMsharp" Version="1.2.5" />
+    <ProjectReference Include="..\LibSVMsharp\LibSVMsharp\LibSVMsharp.csproj" />
   </ItemGroup>
 
 </Project>

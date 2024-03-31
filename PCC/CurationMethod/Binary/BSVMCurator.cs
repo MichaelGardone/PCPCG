@@ -334,8 +334,8 @@ namespace PCC.CurationMethod.Binary
                         indx = GlobalUtilities.GetRandom().Next(0, dislikedSamples.Count());
                     } while (negSamples.Contains(indx));
 
-                    posSamples.Add(indx);
-                } while (posSamples.Count < posSampleCount);
+                    negSamples.Add(indx);
+                } while (negSamples.Count < posSampleCount);
             }
             else
             {
@@ -360,7 +360,7 @@ namespace PCC.CurationMethod.Binary
 
             foreach (int indx in negSamples)
             {
-                problem.Add(likedSamples[indx], -1);
+                problem.Add(dislikedSamples[indx], -1);
             }
 
             ModelNComponents model = new ModelNComponents

@@ -2,6 +2,7 @@
 using PCC.ContentRepresentation.Features;
 using PCC.ContentRepresentation.Sample;
 using PCC.CurationMethod.Binary;
+using PCC.Utility;
 using PCC.Utility.Range;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace PCCTester.CurationFunctionality.Binary
         [TestMethod]
         public void CSVMCuratorTest()
         {
+            GlobalUtilities.ResetRandom();
+
             SVMParameter parameters = new SVMParameter {
                 Type = SVMType.C_SVC,
                 Kernel = SVMKernelType.RBF,
