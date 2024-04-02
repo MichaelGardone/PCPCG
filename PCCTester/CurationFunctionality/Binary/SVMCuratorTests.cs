@@ -4,10 +4,6 @@ using PCC.ContentRepresentation.Sample;
 using PCC.CurationMethod.Binary;
 using PCC.Utility;
 using PCC.Utility.Range;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PCCTester.CurationFunctionality.Binary
 {
@@ -49,8 +45,6 @@ namespace PCCTester.CurationFunctionality.Binary
 
             // Train and add a new model
             curator.AddModel(curator.TrainNewModel());
-
-
         }
 
     }
