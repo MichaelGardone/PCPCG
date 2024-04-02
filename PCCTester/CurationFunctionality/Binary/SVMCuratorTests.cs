@@ -23,11 +23,18 @@ namespace PCCTester.CurationFunctionality.Binary
             };
 
             SVMCuratorProperties properties = new SVMCuratorProperties();
-            
+
+#if !UNITY_EXPORT
             List<Feature> features = new List<Feature>(){
                 new Feature("cherries", new IntRange(0, 2)),
                 new Feature("power pellets", new FloatRange(0.02f, 0.3f))
             };
+#else
+            Feature[] features = new Feature[2]{
+                new Feature("cherries", new IntRange(0, 2)),
+                new Feature("power pellets", new FloatRange(0.02f, 0.3f))
+            };
+#endif
 
             BSVMCurator curator = new BSVMCurator(features, parameters, properties);
 

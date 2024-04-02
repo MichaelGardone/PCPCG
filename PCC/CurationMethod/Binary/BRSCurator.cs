@@ -19,9 +19,50 @@ namespace PCC.CurationMethod.Binary
         protected float negInfluence;
         protected float posInfluence;
 
+#if !UNITY_EXPORT
         protected List<Feature> features;
 
         public BRSCurator(List<Feature> features,
+            int goodMemSize = -1, int badMemSize = -1, bool useDiffMems = false,
+            float negInfluence = 0.2f, float posInfluence = 0.2f,
+            int sigfigs = 3)
+            {
+            if (useDiffMems)
+                {
+                if (goodMemSize <= 0)
+                {
+                    likedBuffer = new InfiniteBuffer<HistoricSample>();
+                }
+                else
+                {
+                    likedBuffer = new RingBuffer<HistoricSample>(goodMemSize);
+                }
+
+                if (badMemSize <= 0)
+                    dislikedBuffer = new InfiniteBuffer<HistoricSample>();
+                else
+                    dislikedBuffer = new RingBuffer<HistoricSample>(badMemSize);
+            }
+            else
+            {
+                if (goodMemSize > 0)
+                    memoryBuffer = new RingBuffer<Tuple<HistoricSample, int>>(goodMemSize);
+                else if (badMemSize > 0)
+                    memoryBuffer = new RingBuffer<Tuple<HistoricSample, int>>(badMemSize);
+                else
+                    memoryBuffer = new InfiniteBuffer<Tuple<HistoricSample, int>>();
+            }
+
+            sigfigCount = sigfigs;
+            this.negInfluence = negInfluence;
+            this.posInfluence = posInfluence;
+
+            this.features = features;
+        }
+#else
+        protected Feature[] features;
+
+        public BRSCurator(Feature[] features,
             int goodMemSize = -1, int badMemSize = -1, bool useDiffMems = false,
             float negInfluence = 0.2f, float posInfluence = 0.2f,
             int sigfigs = 3)
@@ -55,8 +96,11 @@ namespace PCC.CurationMethod.Binary
             sigfigCount = sigfigs;
             this.negInfluence = negInfluence;
             this.posInfluence = posInfluence;
+
             this.features = features;
         }
+#endif
+
 
         public void ClearMemory()
         {
@@ -122,10 +166,17 @@ namespace PCC.CurationMethod.Binary
             return samples;
         }
 
+#if !UNITY_EXPORT
         public List<Feature> GetFeatures()
         {
             return features;
         }
+#else
+        public Feature[] GetFeatures()
+        {
+            return features;
+        }
+#endif
 
         public List<int> GetLabels()
         {

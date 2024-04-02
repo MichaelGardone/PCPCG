@@ -187,6 +187,69 @@ namespace PCC.ContentRepresentation.Sample
             }
         }
 
+        public HistoricSample(Feature[] archetypes, Sample sample, float change, int sigfigs = 3)
+        {
+            this.features = new Dictionary<string, Tuple<FeatureType, int>>();
+            intList = new List<Tuple<int, int>>();
+            floatList = new List<Tuple<float, float>>();
+
+            foreach (string key in sample.GetFeatures())
+            {
+                Tuple<SampleValue, FeatureType> type = sample[key]!;
+
+                switch (type.Item2)
+                {
+                    case FeatureType.INT:
+                        int intVal = type.Item1.intVal;
+
+                        // Will never be null
+                        Tuple<int, int> extents = null;
+                        for (int i = 0; i < archetypes.Length; i++)
+                        {
+                            if (archetypes[i].Name == key)
+                            {
+                                extents = archetypes[i].Range.intRange.WhichRangeHasValue(intVal)!;
+                                break;
+                            }
+                        }
+
+                        int min = (int)Math.Floor(intVal - intVal * change);
+                        int max = (int)Math.Ceiling(intVal + intVal * change);
+
+                        intList.Add(new Tuple<int, int>(
+                                Math.Max(min, extents!.Item1),
+                                Math.Min(max, extents!.Item2)
+                            )
+                        );
+                        this.features.Add(key, new Tuple<FeatureType, int>(type.Item2, intList.Count - 1));
+                        break;
+                    case FeatureType.FLOAT:
+                        float floatVal = type.Item1.floatVal;
+
+                        Tuple<float, float> extentsF = null;
+                        for(int i = 0; i < archetypes.Length; i++)
+                        {
+                            if (archetypes[i].Name == key)
+                            {
+                                extentsF = archetypes[i].Range.floatRange.WhichRangeHasValue(floatVal)!;
+                                break;
+                            }
+                        }
+                        float minF = MathF.Round(floatVal - floatVal * change, sigfigs);
+                        float maxF = MathF.Round(floatVal + floatVal * change, sigfigs);
+
+                        floatList.Add(
+                            new Tuple<float, float>(
+                                MathF.Max(minF, extentsF!.Item1),
+                                MathF.Min(maxF, extentsF!.Item2)
+                            )
+                        );
+                        this.features.Add(key, new Tuple<FeatureType, int>(type.Item2, floatList.Count - 1));
+                        break;
+                }
+            }
+        }
+
         public HistoricSample(List<Feature> archetypes, Sample sample, float change, int sigfigs = 3)
         {
             this.features = new Dictionary<string, Tuple<FeatureType, int>>();

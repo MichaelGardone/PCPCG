@@ -11,6 +11,22 @@
     <Configurations>Debug;Release;UnityDebug;UnityRelease</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnityDebug|AnyCPU'">
+    <DefineConstants>$(DefineConstants);UNITY_EXPORT</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnityDebug|x64'">
+    <DefineConstants>$(DefineConstants);UNITY_EXPORT</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnityRelease|AnyCPU'">
+    <DefineConstants>$(DefineConstants);UNITY_EXPORT</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UnityRelease|x64'">
+    <DefineConstants>$(DefineConstants);UNITY_EXPORT</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />

@@ -36,8 +36,11 @@ namespace PCC.CurationMethod
         /// <summary>
         /// Get the features associated with the curation method.
         /// </summary>
+#if !UNITY_EXPORT
         public List<Feature> GetFeatures();
-
+#else
+        public Feature[] GetFeatures();
+#endif
 
         public Sample? GetRandomSample();
 

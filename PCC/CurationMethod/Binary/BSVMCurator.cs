@@ -76,7 +76,6 @@ namespace PCC.CurationMethod.Binary
         // SVM information
         protected SVMParameter parameter;
         protected SVMCuratorProperties properties;
-        protected List<Feature> features;
         // SVM information
 
         protected int minSamples;
@@ -93,6 +92,8 @@ namespace PCC.CurationMethod.Binary
             }
         }
 
+#if !UNITY_EXPORT
+        protected List<Feature> features;
         public BSVMCurator(List<Feature> features, SVMParameter svmParameters, SVMCuratorProperties curProperties)
         {
             minSamples = features.Count;
@@ -105,6 +106,21 @@ namespace PCC.CurationMethod.Binary
             likedSamples = new RingBuffer<SVMNode[]>(curProperties.LikedMemSize);
             dislikedSamples = new RingBuffer<SVMNode[]>(curProperties.DislikedMemSize);
         }
+#else
+        protected Feature[] features;
+        public BSVMCurator(Feature[] features, SVMParameter svmParameters, SVMCuratorProperties curProperties)
+        {
+            minSamples = features.Length;
+            this.features = features;
+
+            properties = curProperties;
+            parameter = svmParameters;
+
+            models = new RingBuffer<ModelNComponents>(curProperties.BagSize);
+            likedSamples = new RingBuffer<SVMNode[]>(curProperties.LikedMemSize);
+            dislikedSamples = new RingBuffer<SVMNode[]>(curProperties.DislikedMemSize);
+        }
+#endif
 
         public void ClearMemory()
         {
@@ -172,10 +188,17 @@ namespace PCC.CurationMethod.Binary
             return samples;
         }
 
+#if !UNITY_EXPORT
         public List<Feature> GetFeatures()
         {
             return features;
         }
+#else
+        public Feature[] GetFeatures()
+        {
+            return features;
+        }
+#endif
 
         public List<int> GetLabels()
         {
