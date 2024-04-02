@@ -4,6 +4,8 @@ The official codebase repository for the Player-Centered PCG series of papers.
 
 This is work by Michael Gardone, Nancy N. Blackburn, and Daniel S. Brown
 
+For examples of how to implement it in Unity, [please view this repository](https://github.com/MichaelGardone/PCC-Examples)!
+
 ## External Libraries
 
 The PCC DLL relies on LibSVMSharp, which is a wrapper around the C++ libsvm library created by Chih-Chung Chang and Chih-Jen Lin of the Information Engineering Graduate Institute of Taiwan University.
