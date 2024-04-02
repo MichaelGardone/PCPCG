@@ -4,6 +4,7 @@ using PCC.ContentRepresentation.Features;
 using PCC.ContentRepresentation.Sample;
 using PCC.Utility;
 using PCC.Utility.Memory;
+using System.Reflection;
 
 namespace PCC.CurationMethod.Binary
 {
@@ -251,11 +252,19 @@ namespace PCC.CurationMethod.Binary
             SVMNode[] nodes = LibSVMHelper.SampleToSVMNode(sample);
 
             // Run each model to predict the rating on it
+#if UNITY_EXPORT
+            for(int i = 0; i < models.Count(); i++)
+            {
+                if (models.Get(i).model.Predict(nodes) == 1)
+                    rate -= modelContrib;
+            }
+#else
             foreach (ModelNComponents model in models)
             {
                 if (model.model.Predict(nodes) == 1)
                     rate -= modelContrib;
             }
+#endif
 
             return rate;
         }

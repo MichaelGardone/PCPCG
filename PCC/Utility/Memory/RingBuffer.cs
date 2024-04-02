@@ -74,6 +74,7 @@ namespace PCC.Utility.Memory
             return new RingBuffer<T>(capacity);
         }
 
+#if !UNITY_EXPORT
         public IEnumerator<T> GetEnumerator()
         {
             int max = m_full ? m_memory.Length : m_offset;
@@ -83,6 +84,11 @@ namespace PCC.Utility.Memory
                 yield return m_memory[i];
             }
         }
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+#endif
 
         public int Count()
         {
@@ -97,9 +103,5 @@ namespace PCC.Utility.Memory
             return m_memory.Length;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
     }
 }
