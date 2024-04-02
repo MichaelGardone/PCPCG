@@ -99,7 +99,7 @@ namespace PCC.Utility.Memory
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
     }
 }

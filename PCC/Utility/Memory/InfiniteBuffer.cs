@@ -59,7 +59,7 @@ namespace PCC.Utility.Memory
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return (IEnumerator)GetEnumerator();
         }
 
         public int Count()
