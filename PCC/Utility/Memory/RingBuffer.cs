@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 
 namespace PCC.Utility.Memory
 {
@@ -73,22 +73,6 @@ namespace PCC.Utility.Memory
         {
             return new RingBuffer<T>(capacity);
         }
-
-#if !UNITY_EXPORT
-        public IEnumerator<T> GetEnumerator()
-        {
-            int max = m_full ? m_memory.Length : m_offset;
-
-            for (int i = 0; i < max; i++)
-            {
-                yield return m_memory[i];
-            }
-        }
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-#endif
 
         public int Count()
         {

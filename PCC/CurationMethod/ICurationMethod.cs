@@ -1,5 +1,6 @@
 ﻿using PCC.ContentRepresentation.Features;
 using PCC.ContentRepresentation.Sample;
+using System.Collections.Generic;
 
 namespace PCC.CurationMethod
 {
@@ -36,11 +37,7 @@ namespace PCC.CurationMethod
         /// <summary>
         /// Get the features associated with the curation method.
         /// </summary>
-#if !UNITY_EXPORT
         public List<Feature> GetFeatures();
-#else
-        public Feature[] GetFeatures();
-#endif
 
         public Sample? GetRandomSample();
 

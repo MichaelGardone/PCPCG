@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PCC.Utility.Range
 {
@@ -124,7 +125,7 @@ namespace PCC.Utility.Range
             {
                 // Bail if we have no actual range to play with
                 if (DoesOtherRangeOverlapEntirely(exclude))
-                    return null;
+                    return Array.Empty<float>();
 
                 List<Tuple<float, float>> validRanges = new List<Tuple<float, float>>();
 
@@ -201,7 +202,7 @@ namespace PCC.Utility.Range
             return false;
         }
 
-        public bool DoesOtherRangeOverlapRange(Tuple<float, float> range, [NotNull] List<Tuple<float, float>> otherFloatRange)
+        public bool DoesOtherRangeOverlapRange(Tuple<float, float> range, List<Tuple<float, float>> otherFloatRange)
         {
             Tuple<float, float> minRange = otherFloatRange[0];
             Tuple<float, float> maxRange = otherFloatRange[otherFloatRange.Count - 1];

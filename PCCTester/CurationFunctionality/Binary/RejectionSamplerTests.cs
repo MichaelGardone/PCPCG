@@ -19,7 +19,6 @@ namespace PCCTester.CurationFunctionality.Binary
 
             int numOfSamples = 5;
 
-#if !UNITY_EXPORT
             BRSCurator rejSampler = new BRSCurator(
                 new List<Feature>() {
                     new Feature("cherries", new IntRange(0, 2)),
@@ -27,15 +26,6 @@ namespace PCCTester.CurationFunctionality.Binary
                 },
                 -1, -1, false, 0.2f, 0.2f, 2
             );
-#else
-            BRSCurator rejSampler = new BRSCurator(
-                new Feature[2] {
-                    new Feature("cherries", new IntRange(0, 2)),
-                    new Feature("power pellets", new FloatRange(0.02f, 0.3f))
-                },
-                -1, -1, false, 0.2f, 0.2f, 2
-            );
-#endif
 
             List<Sample> samples = rejSampler.GenerateSamples(numOfSamples, SampleGenerationMethod.RANDOM);
             Assert.IsNotNull(samples);

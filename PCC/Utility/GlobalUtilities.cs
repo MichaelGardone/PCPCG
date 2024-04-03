@@ -1,4 +1,7 @@
-﻿namespace PCC.Utility
+﻿using System;
+using System.Collections.Generic;
+
+namespace PCC.Utility
 {
     public static class GlobalUtilities
     {

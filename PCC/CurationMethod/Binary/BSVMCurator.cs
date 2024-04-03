@@ -4,33 +4,43 @@ using PCC.ContentRepresentation.Features;
 using PCC.ContentRepresentation.Sample;
 using PCC.Utility;
 using PCC.Utility.Memory;
-using System.Reflection;
+using System;
+using System.Collections.Generic;
 
 namespace PCC.CurationMethod.Binary
 {
     public struct SVMCuratorProperties
     {
-        public SVMCuratorProperties() { }
+        public SVMCuratorProperties(int bagSize = 5)
+        {
+            DislikedMemSize = 15;
+            LikedMemSize = 15;
+            BagSize = bagSize;
+            SigfigCount = 3;
+            RetrainModelOnSampleCount = 0;
+            UnknownRange = new Tuple<float, float>(0.4f, 0.55f);
+            MaxAttempts = 5;
+        }
 
-        public int DislikedMemSize = 15;
-        public int LikedMemSize = 15;
-        public int BagSize = 5;
-        public int SigfigCount = 3;
+        public int DislikedMemSize;
+        public int LikedMemSize;
+        public int BagSize;
+        public int SigfigCount;
 
         /// <summary>
         /// Retrain a given model if the number of samples falls below this.
         /// </summary>
-        public float RetrainModelOnSampleCount = 0;
+        public float RetrainModelOnSampleCount;
 
         /// <summary>
         /// Range of uncertainty for a given sample. Used in RANDOM_FROM_UNKNOW, RANDOM_FROM_KNOWN, SAFE_ONLY, and UNSAFE_ONLY generation.
         /// </summary>
-        public Tuple<float, float> UnknownRange = new Tuple<float, float>(0.4f, 0.55f);
+        public Tuple<float, float> UnknownRange;
 
         /// <summary>
         /// The max number of attempts to generate a sample before taking whatever comes out.
         /// </summary>
-        public int MaxAttempts = 5;
+        public int MaxAttempts;
     }
 
     public struct ModelNComponents
@@ -275,19 +285,11 @@ namespace PCC.CurationMethod.Binary
             SVMNode[] nodes = LibSVMHelper.SampleToSVMNode(sample);
 
             // Run each model to predict the rating on it
-#if UNITY_EXPORT
             for(int i = 0; i < models.Count(); i++)
             {
                 if (models.Get(i).model.Predict(nodes) == 1)
                     rate -= modelContrib;
             }
-#else
-            foreach (ModelNComponents model in models)
-            {
-                if (model.model.Predict(nodes) == 1)
-                    rate -= modelContrib;
-            }
-#endif
 
             return rate;
         }

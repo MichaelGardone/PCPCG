@@ -3,6 +3,8 @@ using PCC.ContentRepresentation.Sample;
 using PCC.Utility;
 using PCC.Utility.Memory;
 using PCC.Utility.Range;
+using System;
+using System.Collections.Generic;
 
 namespace PCC.CurationMethod.Binary
 {
@@ -19,7 +21,6 @@ namespace PCC.CurationMethod.Binary
         protected float negInfluence;
         protected float posInfluence;
 
-#if !UNITY_EXPORT
         protected List<Feature> features;
 
         public BRSCurator(List<Feature> features,
@@ -59,48 +60,6 @@ namespace PCC.CurationMethod.Binary
 
             this.features = features;
         }
-#else
-        protected Feature[] features;
-
-        public BRSCurator(Feature[] features,
-            int goodMemSize = -1, int badMemSize = -1, bool useDiffMems = false,
-            float negInfluence = 0.2f, float posInfluence = 0.2f,
-            int sigfigs = 3)
-        {
-            if (useDiffMems)
-                {
-                if (goodMemSize <= 0)
-                {
-                    likedBuffer = new InfiniteBuffer<HistoricSample>();
-                }
-                else
-                {
-                    likedBuffer = new RingBuffer<HistoricSample>(goodMemSize);
-                }
-
-                if (badMemSize <= 0)
-                    dislikedBuffer = new InfiniteBuffer<HistoricSample>();
-                else
-                    dislikedBuffer = new RingBuffer<HistoricSample>(badMemSize);
-            }
-            else
-            {
-                if (goodMemSize > 0)
-                    memoryBuffer = new RingBuffer<Tuple<HistoricSample, int>>(goodMemSize);
-                else if (badMemSize > 0)
-                    memoryBuffer = new RingBuffer<Tuple<HistoricSample, int>>(badMemSize);
-                else
-                    memoryBuffer = new InfiniteBuffer<Tuple<HistoricSample, int>>();
-            }
-
-            sigfigCount = sigfigs;
-            this.negInfluence = negInfluence;
-            this.posInfluence = posInfluence;
-
-            this.features = features;
-        }
-#endif
-
 
         public void ClearMemory()
         {
@@ -166,17 +125,10 @@ namespace PCC.CurationMethod.Binary
             return samples;
         }
 
-#if !UNITY_EXPORT
         public List<Feature> GetFeatures()
         {
             return features;
         }
-#else
-        public Feature[] GetFeatures()
-        {
-            return features;
-        }
-#endif
 
         public List<int> GetLabels()
         {
@@ -296,7 +248,6 @@ namespace PCC.CurationMethod.Binary
 
             if (memoryBuffer != null)
             {
-#if UNITY_EXPORT
                 for (int i = 0; i < memoryBuffer.Count(); i++)
                 {
                     Tuple<HistoricSample, int> sample = memoryBuffer.Get(i);
@@ -326,41 +277,11 @@ namespace PCC.CurationMethod.Binary
                         }
                     }
                 }
-#else
-                foreach (Tuple<HistoricSample, int> sample in memoryBuffer)
-                {
-                    // Skip if we aren't looking at the right sample
-                    if ((whichHistory == 1 && sample.Item2 == -1) || (whichHistory == -1 && sample.Item2 == 1))
-                        continue;
-
-                    foreach(Feature feat in features)
-                    {
-                        Tuple<SampleValue, SampleValue> vals = sample.Item1[feat.Name]!;
-
-                        switch (feat.FeatureType)
-                        {
-                            case FeatureType.INT:
-                                if (knownIntRanges.ContainsKey(feat.Name) == false)
-                                    knownIntRanges[feat.Name] = new List<Tuple<int, int>>();
-
-                                knownIntRanges[feat.Name].Add(new Tuple<int, int>(vals.Item1.intVal, vals.Item2.intVal));
-                                break;
-                            case FeatureType.FLOAT:
-                                if (knownFloatRanges.ContainsKey(feat.Name) == false)
-                                    knownFloatRanges[feat.Name] = new List<Tuple<float, float>>();
-
-                                knownFloatRanges[feat.Name].Add(new Tuple<float, float>(vals.Item1.floatVal, vals.Item2.floatVal));
-                                break;
-                        }
-                    }
-                }
-#endif
             }
             else
             {
                 if (whichHistory == 0 || whichHistory == 1)
                 {
-#if UNITY_EXPORT
                     for (int i = 0; i < likedBuffer!.Count(); i++)
                     {
                         HistoricSample sample = likedBuffer!.Get(i);
@@ -387,36 +308,9 @@ namespace PCC.CurationMethod.Binary
                         }
                     }
                 }
-#else
-                    foreach (HistoricSample sample in likedBuffer!)
-                    {
-                        foreach (Feature feat in features)
-                        {
-                            Tuple<SampleValue, SampleValue> vals = sample[feat.Name]!;
-
-                            switch (feat.FeatureType)
-                            {
-                                case FeatureType.INT:
-                                    if (knownIntRanges.ContainsKey(feat.Name) == false)
-                                        knownIntRanges[feat.Name] = new List<Tuple<int, int>>();
-
-                                    knownIntRanges[feat.Name].Add(new Tuple<int, int>(vals.Item1.intVal, vals.Item2.intVal));
-                                    break;
-                                case FeatureType.FLOAT:
-                                    if (knownFloatRanges.ContainsKey(feat.Name) == false)
-                                        knownFloatRanges[feat.Name] = new List<Tuple<float, float>>();
-
-                                    knownFloatRanges[feat.Name].Add(new Tuple<float, float>(vals.Item1.floatVal, vals.Item2.floatVal));
-                                    break;
-                            }
-                        }
-                    }
-                }
-#endif
 
                 if(whichHistory == 0 || whichHistory == -1)
                 {
-#if UNITY_EXPORT
                     for (int i = 0; i < dislikedBuffer!.Count(); i++)
                     {
                         HistoricSample sample = dislikedBuffer.Get(i);
@@ -442,31 +336,6 @@ namespace PCC.CurationMethod.Binary
                             }
                         }
                     }
-#else
-                    foreach (HistoricSample sample in dislikedBuffer!)
-                    {
-                        foreach (Feature feat in features)
-                        {
-                            Tuple<SampleValue, SampleValue> vals = sample[feat.Name]!;
-
-                            switch (feat.FeatureType)
-                            {
-                                case FeatureType.INT:
-                                    if (knownIntRanges.ContainsKey(feat.Name) == false)
-                                        knownIntRanges[feat.Name] = new List<Tuple<int, int>>();
-
-                                    knownIntRanges[feat.Name].Add(new Tuple<int, int>(vals.Item1.intVal, vals.Item2.intVal));
-                                    break;
-                                case FeatureType.FLOAT:
-                                    if (knownFloatRanges.ContainsKey(feat.Name) == false)
-                                        knownFloatRanges[feat.Name] = new List<Tuple<float, float>>();
-
-                                    knownFloatRanges[feat.Name].Add(new Tuple<float, float>(vals.Item1.floatVal, vals.Item2.floatVal));
-                                    break;
-                            }
-                        }
-                    }
-#endif
                 }
             }
 

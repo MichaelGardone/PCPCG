@@ -1,5 +1,7 @@
 ﻿using LibSVMsharp;
 using PCC.ContentRepresentation.Features;
+using System;
+using System.Collections.Generic;
 
 namespace PCC.ContentRepresentation.Sample
 {

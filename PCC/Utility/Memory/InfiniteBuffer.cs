@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace PCC.Utility.Memory
 {
@@ -48,21 +49,6 @@ namespace PCC.Utility.Memory
         {
             return false; // always never full
         }
-
-#if !UNITY_EXPORT
-        public IEnumerator<T> GetEnumerator()
-        {
-            for (int i = 0; i < m_memory.Count; i++)
-            {
-                yield return m_memory[i];
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return (IEnumerator)GetEnumerator();
-        }
-#endif
 
         public int Count()
         {

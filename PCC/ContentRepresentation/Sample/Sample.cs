@@ -1,4 +1,7 @@
 ﻿using PCC.ContentRepresentation.Features;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -137,12 +140,21 @@ namespace PCC.ContentRepresentation.Sample
             {
                 switch(feature.Value.Item1)
                 {
+#if !UNITY_EXPORT
                     case FeatureType.INT:
                         sb.Append($"({feature.Key}: {intList[feature.Value.Item2]}),");
                         break;
                     case FeatureType.FLOAT:
                         sb.Append($"({feature.Key}: {floatList[feature.Value.Item2]}),");
                         break;
+#else
+                    case FeatureType.INT:
+                        sb.Append("(" + feature.Key + ": " + intList[feature.Value.Item2] + ",)");
+                        break;
+                    case FeatureType.FLOAT:
+                        sb.Append("(" + feature.Key + ": " + floatList[feature.Value.Item2] + ",)");
+                        break;
+#endif
                 }
             }
 
@@ -203,7 +215,7 @@ namespace PCC.ContentRepresentation.Sample
                         int intVal = type.Item1.intVal;
 
                         // Will never be null
-                        Tuple<int, int> extents = null;
+                        Tuple<int, int>? extents = null;
                         for (int i = 0; i < archetypes.Length; i++)
                         {
                             if (archetypes[i].Name == key)
@@ -226,7 +238,7 @@ namespace PCC.ContentRepresentation.Sample
                     case FeatureType.FLOAT:
                         float floatVal = type.Item1.floatVal;
 
-                        Tuple<float, float> extentsF = null;
+                        Tuple<float, float>? extentsF = null;
                         for(int i = 0; i < archetypes.Length; i++)
                         {
                             if (archetypes[i].Name == key)
