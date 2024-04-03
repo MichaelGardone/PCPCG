@@ -8,7 +8,7 @@ For examples of how to implement it in Unity, [please view this repository](http
 
 ## External Libraries
 
-The PCC DLL relies on LibSVMSharp, which is a wrapper around the C++ libsvm library created by Chih-Chung Chang and Chih-Jen Lin of the Information Engineering Graduate Institute of Taiwan University.
+The PCC DLL relies on LibSVMSharp created by Can Erhan, which is a wrapper around the C++ libsvm library created by Chih-Chung Chang and Chih-Jen Lin of the Information Engineering Graduate Institute of Taiwan University.
 
 ## Licenses
 
